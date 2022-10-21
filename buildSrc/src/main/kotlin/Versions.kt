@@ -7,7 +7,7 @@ const val dokkaVersion = "1.6.21"
 
 val jvmVersion = JavaVersion.VERSION_11
 const val MIN_SDK: Int = 23
-const val TARGET_SDK: Int = 32
+const val TARGET_SDK: Int = 33
 const val COMPILE_SDK: Int = TARGET_SDK
 const val kotlinVersion = "1.7.10"
 const val kspVersion = "1.7.10-1.0.6"

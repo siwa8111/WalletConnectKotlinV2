@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
     kotlin("android")
     kotlin("kapt")
+    id("com.google.devtools.ksp") version kspVersion
 }
 
 android {
@@ -47,6 +49,13 @@ dependencies {
 
     debugImplementation(project(":androidCore:sdk"))
     releaseImplementation("com.walletconnect:android-core:1.0.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:31.0.0"))
+    implementation("com.google.firebase:firebase-messaging")
+
+    retrofit()
+    moshi()
+    moshiKsp()
 
     scanner()
     glide_N_kapt()

@@ -1,7 +1,9 @@
 package com.walletconnect.wallet.ui.accounts
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -15,13 +17,26 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.walletconnect.android.common.di.AndroidCommonDITags
+import com.walletconnect.android.common.storage.KeyStore
+import com.walletconnect.android.common.wcKoinApp
 import com.walletconnect.sample_common.BottomVerticalSpaceItemDecoration
 import com.walletconnect.sample_common.viewBinding
 import com.walletconnect.wallet.ACCOUNTS_ARGUMENT_KEY
+import com.walletconnect.wallet.EchoServerService
+import com.walletconnect.wallet.PushBody
 import com.walletconnect.wallet.R
 import com.walletconnect.wallet.databinding.FragmentAccountsBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.koin.core.qualifier.named
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
 
 class AccountsFragment : Fragment(R.layout.fragment_accounts) {
     private val binding by viewBinding(FragmentAccountsBinding::bind)
@@ -100,6 +115,39 @@ class AccountsFragment : Fragment(R.layout.fragment_accounts) {
             }
             R.id.qrCodeScanner -> {
                 findNavController().navigate(R.id.action_fragment_accounts_to_fragment_scanner)
+                false
+            }
+            R.id.registPush -> {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("https://push.walletconnect.com/")
+                    .addConverterFactory(MoshiConverterFactory.create())
+                    .client(wcKoinApp.koin.get(named(AndroidCommonDITags.OK_HTTP)))
+                    .build()
+                val adapter = retrofit.create(EchoServerService::class.java)
+                val sp = wcKoinApp.koin.get<SharedPreferences>()
+                val clientId = sp.getString("clientId", "") ?: ""
+//                val (_, clientId) = wcKoinApp.koin.get<KeyStore>().getKeys("key_did_keypair").also { (_, clientId) ->
+//                    Log.e("Talha", clientId)
+//                }
+                val token = (sp.getString("fcm_token", "") ?: "").also {
+                    Log.e("Talha", it)
+                }
+//                val body: RequestBody = RequestBody.create(MediaType.parse("application/json"), obj.toString())
+
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    val response = adapter.clients(PushBody(
+                        clientId,
+                        "fcm",
+                        token
+                    ))
+
+                    if (!response.isSuccessful) {
+                        Log.e("Talha", response.errorBody()?.string() ?: "")
+                    } else {
+                        Log.e("Talha", response.body()?.status ?: "")
+                    }
+                }
+
                 false
             }
             else -> super.onOptionsItemSelected(item)

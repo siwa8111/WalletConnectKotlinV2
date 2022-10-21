@@ -12,4 +12,9 @@
         android:icon="@drawable/ic_qr_code_scanner"
         android:title="QR Code"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/registPush"
+        android:title="Register"
+        app:showAsAction="collapseActionView|withText"/>
 </menu>

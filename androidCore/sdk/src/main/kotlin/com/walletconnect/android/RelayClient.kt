@@ -3,6 +3,9 @@
 package com.walletconnect.android
 
 import android.app.Application
+import android.content.SharedPreferences
+import android.util.Log
+import androidx.core.content.edit
 import com.walletconnect.android.common.connection.ConnectivityState
 import com.walletconnect.android.common.di.AndroidCommonDITags
 import com.walletconnect.android.common.di.androidApiCryptoModule
@@ -41,7 +44,12 @@ object RelayClient : BaseRelayClient(), RelayConnectionInterface {
 
         logger = wcKoinApp.koin.get(named(AndroidCommonDITags.LOGGER))
         val jwtRepository = wcKoinApp.koin.get<JwtRepository>()
-        val jwt = jwtRepository.generateJWT(relayServerUrl.strippedUrl())
+        val jwt = jwtRepository.generateJWT(relayServerUrl.strippedUrl()) { clientId ->
+            val cid = clientId.split(":").last()
+            wcKoinApp.koin.get<SharedPreferences>().edit {
+                putString("clientId", cid)
+            }
+        }
         val serverUrl = relayServerUrl.addUserAgent(sdkVersion)
 
         wcKoinApp.modules(androidApiNetworkModule(serverUrl, jwt, connectionType.toCommonConnectionType(), sdkVersion))
