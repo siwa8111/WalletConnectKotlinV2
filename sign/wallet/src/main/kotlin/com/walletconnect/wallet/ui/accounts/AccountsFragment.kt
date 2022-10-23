@@ -119,7 +119,7 @@ class AccountsFragment : Fragment(R.layout.fragment_accounts) {
             }
             R.id.registPush -> {
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("https://push.walletconnect.com/")
+                    .baseUrl("https://echo.walletconnect.com/")
                     .addConverterFactory(MoshiConverterFactory.create())
                     .client(wcKoinApp.koin.get(named(AndroidCommonDITags.OK_HTTP)))
                     .build()
