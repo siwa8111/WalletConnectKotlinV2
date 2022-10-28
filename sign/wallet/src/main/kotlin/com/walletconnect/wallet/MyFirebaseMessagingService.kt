@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.walletconnect.android.common.wcKoinApp
+import com.walletconnect.android.internal.common.wcKoinApp
 import com.walletconnect.sample_common.tag
 import com.walletconnect.wallet.ui.host.WalletSampleActivity
 

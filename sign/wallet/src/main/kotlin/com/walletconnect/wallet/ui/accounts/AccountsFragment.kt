@@ -17,9 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.walletconnect.android.common.di.AndroidCommonDITags
-import com.walletconnect.android.common.storage.KeyStore
-import com.walletconnect.android.common.wcKoinApp
+import com.walletconnect.android.internal.common.di.AndroidCommonDITags
+import com.walletconnect.android.internal.common.wcKoinApp
 import com.walletconnect.sample_common.BottomVerticalSpaceItemDecoration
 import com.walletconnect.sample_common.viewBinding
 import com.walletconnect.wallet.ACCOUNTS_ARGUMENT_KEY
@@ -31,8 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import org.koin.core.qualifier.named
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -125,10 +122,9 @@ class AccountsFragment : Fragment(R.layout.fragment_accounts) {
                     .build()
                 val adapter = retrofit.create(EchoServerService::class.java)
                 val sp = wcKoinApp.koin.get<SharedPreferences>()
-                val clientId = sp.getString("clientId", "") ?: ""
-//                val (_, clientId) = wcKoinApp.koin.get<KeyStore>().getKeys("key_did_keypair").also { (_, clientId) ->
-//                    Log.e("Talha", clientId)
-//                }
+                val clientId = (sp.getString("clientId", "") ?: "").also {
+                    Log.e("TalhaClientID", it)
+                }
                 val token = (sp.getString("fcm_token", "") ?: "").also {
                     Log.e("Talha", it)
                 }
