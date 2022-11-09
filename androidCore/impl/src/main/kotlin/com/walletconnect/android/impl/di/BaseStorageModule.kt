@@ -44,6 +44,7 @@ fun baseStorageModule() = module {
         try {
             createCoreDB().also {
                 it.jsonRpcHistoryQueries.selectLastInsertedRowId().executeAsOneOrNull()
+                it.pairingQueries.getListOfPairing()
             }
         } catch (e: Exception) {
             deleteDBs(DBNames.ANDROID_CORE_DB_NAME)

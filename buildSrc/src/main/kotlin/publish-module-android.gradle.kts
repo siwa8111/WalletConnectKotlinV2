@@ -1,5 +1,7 @@
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
+import groovy.util.Node
+import groovy.xml.dom.DOMCategory.appendNode
 
 plugins {
     `maven-publish`
@@ -50,6 +52,27 @@ afterEvaluate {
                             name.set("SQLCipher Community Edition")
                             url.set("https://www.zetetic.net/sqlcipher/license/")
                         }
+                    }
+
+                    withXml {
+                        val rootNode = asNode().apply root@{
+//                            append(Node(this@root, "repositories").apply repositories@{
+////                                appendNode(Node(this@repositories, "repository").apply repository@{
+////                                    appendNode(Node(this@repository, "id", "sonatypeSnapshots"))
+////                                    appendNode(Node(this@repository, "name", "Sonatype Snapshots"))
+////                                    appendNode(Node(this@repository, "releases").apply releases@{
+////                                        appendNode(Node(this@releases, "enabled", "false"))
+////                                    })
+////                                    appendNode(Node(this@repository, "snapshots").apply snapshots@{
+////                                        appendNode(Node(this@snapshots, "enabled", "true"))
+////                                    })
+////                                    appendNode(Node(this@repository, "url", "https://oss.sonatype.org/content/repositories/snapshots"))
+////                                })
+//                            })
+//                            appendNode("repositories")
+                        }
+
+                        println(rootNode.text())
                     }
 
                     developers {

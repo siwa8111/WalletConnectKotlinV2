@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 object WalletDelegate : SignClient.WalletDelegate {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val _wcEventModels: MutableSharedFlow<Sign.Model?> = MutableSharedFlow(1)
+    private val _wcEventModels: MutableSharedFlow<Sign.Model?> = MutableSharedFlow(replay = 1)
     val wcEventModels: SharedFlow<Sign.Model?> = _wcEventModels
 
     var sessionProposal: Sign.Model.SessionProposal? = null
