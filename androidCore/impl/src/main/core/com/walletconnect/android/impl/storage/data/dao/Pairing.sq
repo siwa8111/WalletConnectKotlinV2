@@ -42,3 +42,6 @@ updateOrAbortExpiry:
 UPDATE OR ABORT Pairing
 SET expiry = ?
 WHERE ? = topic;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

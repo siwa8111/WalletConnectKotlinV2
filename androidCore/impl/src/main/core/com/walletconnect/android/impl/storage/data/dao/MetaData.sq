@@ -35,3 +35,6 @@ WHERE sequence_topic = ? AND type = ?;
 deleteMetaDataFromTopic:
 DELETE FROM MetaData
 WHERE sequence_topic = ?;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

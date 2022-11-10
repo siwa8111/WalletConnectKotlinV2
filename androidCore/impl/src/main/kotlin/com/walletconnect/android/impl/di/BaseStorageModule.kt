@@ -42,9 +42,7 @@ fun baseStorageModule() = module {
 
     single(named(AndroidCoreDITags.ANDROID_CORE_DATABASE)) {
         try {
-            createCoreDB().also {
-                it.jsonRpcHistoryQueries.selectLastInsertedRowId().executeAsOneOrNull()
-            }
+            createCoreDB().also { it.verifyTablesIntegrity() }
         } catch (e: Exception) {
             deleteDBs(DBNames.ANDROID_CORE_DB_NAME)
             createCoreDB()
@@ -72,4 +70,10 @@ object DBNames {
 
 fun Scope.deleteDBs(dbName: String) {
     androidContext().deleteDatabase(dbName)
+}
+
+fun AndroidCoreDatabase.verifyTablesIntegrity() {
+    jsonRpcHistoryQueries.selectLastInsertedRowId().executeAsOneOrNull()
+    pairingQueries.selectLastInsertedRowId().executeAsOneOrNull()
+    metaDataQueries.selectLastInsertedRowId().executeAsOneOrNull()
 }
