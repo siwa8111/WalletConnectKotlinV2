@@ -3,10 +3,10 @@
     <item
         android:id="@+id/accounts_graph"
         android:icon="@drawable/ic_account_wallet"
-        android:title="Accounts" />
+        android:title="@string/accounts_label" />
 
     <item
         android:id="@+id/active_session_graph"
         android:icon="@drawable/ic_sessions"
-        android:title="Session" />
+        android:title="@string/session_label" />
 </menu>

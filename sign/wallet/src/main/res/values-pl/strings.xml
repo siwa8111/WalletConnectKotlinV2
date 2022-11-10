@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WC Portfel</string>
+    <string name="accounts_label">Konta</string>
+    <string name="session_label">Sesje</string>
+</resources>

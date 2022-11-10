@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WC Wallet</string>
+    <string name="accounts_label">Accounts</string>
+    <string name="session_label">Sessions</string>
 </resources>
