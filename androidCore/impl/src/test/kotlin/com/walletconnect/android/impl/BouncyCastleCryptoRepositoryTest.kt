@@ -1,7 +1,7 @@
 package com.walletconnect.android.impl
 
-import com.walletconnect.android.internal.common.storage.KeyStore
 import com.walletconnect.android.impl.data.repository.BouncyCastleKeyManagementRepository
+import com.walletconnect.android.internal.common.storage.KeyStore
 import com.walletconnect.foundation.common.model.PrivateKey
 import com.walletconnect.foundation.common.model.PublicKey
 import com.walletconnect.foundation.common.model.Topic
@@ -44,7 +44,7 @@ internal class BouncyCastleCryptoRepositoryTest {
         val symKey = sut.generateAndStoreSymmetricKey(topicVO)
         assert(symKey.keyAsHex.length == 64)
 
-        val secretKey = sut.getSymmetricKey(topicVO)
+        val secretKey = sut.getSymmetricKey(topicVO.value)
         assertEquals(symKey.keyAsHex, secretKey.keyAsHex)
         assert(secretKey.keyAsHex.length == 64)
     }
@@ -63,8 +63,8 @@ internal class BouncyCastleCryptoRepositoryTest {
     @Test
     fun `SetKeyPair sets the concatenated keys to storage`() {
         assertNotNull(sut.getKeyPair(publicKey))
-        assertEquals(publicKey.keyAsHex, keyChain.getKeys(publicKey.keyAsHex).first)
-        assertEquals(privateKey.keyAsHex, keyChain.getKeys(publicKey.keyAsHex).second)
+        assertEquals(publicKey.keyAsHex, keyChain.getKeys(publicKey.keyAsHex)?.first)
+        assertEquals(privateKey.keyAsHex, keyChain.getKeys(publicKey.keyAsHex)?.second)
     }
 
     @Test
@@ -99,12 +99,12 @@ internal class BouncyCastleCryptoRepositoryTest {
     fun `Generated SymmetricKey gets removed when using a TopicVO as the tag for removeKeys`() {
         val symKey = sut.generateAndStoreSymmetricKey(topicVO)
 
-        val secretKey = sut.getSymmetricKey(topicVO)
+        val secretKey = sut.getSymmetricKey(topicVO.value)
         assertEquals(symKey.keyAsHex, secretKey.keyAsHex)
 
         sut.removeKeys(topicVO.value)
 
-        val secretKeyAfterRemoval = sut.getSymmetricKey(topicVO)
+        val secretKeyAfterRemoval = sut.getSymmetricKey(topicVO.value)
         assertEquals(String.Empty, secretKeyAfterRemoval.keyAsHex)
     }
 }

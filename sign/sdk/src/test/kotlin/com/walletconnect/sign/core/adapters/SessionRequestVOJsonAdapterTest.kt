@@ -4,7 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tinder.scarlet.utils.getRawType
 import com.walletconnect.sign.common.adapters.SessionRequestVOJsonAdapter
-import com.walletconnect.sign.common.model.vo.clientsync.session.SignRpcVO
+import com.walletconnect.sign.common.model.vo.clientsync.session.SignRpc
 import com.walletconnect.sign.common.model.vo.clientsync.session.payload.SessionRequestVO
 import org.intellij.lang.annotations.Language
 import org.json.JSONArray
@@ -41,7 +41,7 @@ internal class SessionRequestVOJsonAdapterTest {
           }
         """.trimIndent()
     }
-    private val adapter by lazy { moshi.adapter(SignRpcVO.SessionRequest::class.java) }
+    private val adapter by lazy { moshi.adapter(SignRpc.SessionRequest::class.java) }
     private val deserializedJson by lazy { adapter.fromJson(stringParamsWithNamedJsonArray) }
     private val serializedParams by lazy { requireNotNull(deserializedJson?.params?.request?.params) }
 
@@ -92,6 +92,38 @@ internal class SessionRequestVOJsonAdapterTest {
         val actualParamsJsonObj = JSONObject("{$serializedParams}")
 
         assertEquals(expectedParamsJsonObj.getJSONArray("transactions").length(), actualParamsJsonObj.getJSONArray("transactions").length())
+
+        iterateJsonObjects(expectedParamsJsonObj, actualParamsJsonObj)
+    }
+
+    @Test
+    fun deserializeStringNumbersInJsonArray() {
+        params = """
+           {
+            "accountAddress":"0x05739743a3d2199e62e1ec0dafa51f031a7605b6c435a93fdc0a6bdad1f2e722",
+            "executionRequest":{
+               "calls":[
+                  {
+                     "contractAddress":"0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+                     "calldata":[
+                        "2465795642632971912885426363894147890865303766466183163047643963432318986018",
+                        "1000000000000000",
+                        "0"
+                     ],
+                     "entrypoint":"transfer"
+                  }
+               ],
+               "invocationDetails":{
+
+               }
+            }
+         }
+        """.trimIndent()
+
+        val expectedParamsJsonObj = JSONObject(params)
+        val actualParamsJsonObj = JSONObject(serializedParams)
+
+        assertEquals(expectedParamsJsonObj.length(), actualParamsJsonObj.length())
 
         iterateJsonObjects(expectedParamsJsonObj, actualParamsJsonObj)
     }

@@ -5,10 +5,9 @@ package com.walletconnect.sign.client
 import com.walletconnect.android.impl.common.SDKError
 import com.walletconnect.android.impl.common.model.ConnectionState
 import com.walletconnect.android.impl.di.cryptoModule
-import com.walletconnect.android.impl.utils.Logger
 import com.walletconnect.android.internal.common.scope
 import com.walletconnect.android.internal.common.wcKoinApp
-import com.walletconnect.android.pairing.toPairing
+import com.walletconnect.android.pairing.model.mapper.toPairing
 import com.walletconnect.foundation.common.model.Topic
 import com.walletconnect.sign.client.mapper.*
 import com.walletconnect.sign.di.commonModule
@@ -29,18 +28,21 @@ internal class SignProtocol : SignInterface {
     }
 
     override fun initialize(init: Sign.Params.Init, onError: (Sign.Model.Error) -> Unit) {
-        Logger.init()
         // TODO: re-init scope
-        wcKoinApp.modules(
-            commonModule(),
-            cryptoModule(),
-            jsonRpcModule(),
-            storageModule(storageSuffix),
-            engineModule()
-        )
+        try {
+            wcKoinApp.modules(
+                commonModule(),
+                cryptoModule(),
+                jsonRpcModule(),
+                storageModule(storageSuffix),
+                engineModule()
+            )
 
-        signEngine = wcKoinApp.koin.get()
-        signEngine.handleInitializationErrors { error -> onError(Sign.Model.Error(error)) }
+            signEngine = wcKoinApp.koin.get()
+            signEngine.setup()
+        } catch (e: Exception) {
+            onError(Sign.Model.Error(e))
+        }
     }
 
     @Throws(IllegalStateException::class)

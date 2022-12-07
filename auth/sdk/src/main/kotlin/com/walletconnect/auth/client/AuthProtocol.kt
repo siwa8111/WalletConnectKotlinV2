@@ -5,10 +5,9 @@ package com.walletconnect.auth.client
 import com.walletconnect.android.impl.common.SDKError
 import com.walletconnect.android.impl.common.model.ConnectionState
 import com.walletconnect.android.impl.di.cryptoModule
-import com.walletconnect.android.impl.utils.Logger
 import com.walletconnect.android.internal.common.scope
 import com.walletconnect.android.internal.common.wcKoinApp
-import com.walletconnect.android.pairing.toPairing
+import com.walletconnect.android.pairing.model.mapper.toPairing
 import com.walletconnect.auth.client.mapper.toClient
 import com.walletconnect.auth.client.mapper.toCommon
 import com.walletconnect.auth.common.model.Events
@@ -29,20 +28,22 @@ internal class AuthProtocol : AuthInterface {
 
     @Throws(IllegalStateException::class)
     override fun initialize(init: Auth.Params.Init, onError: (Auth.Model.Error) -> Unit) {
-        Logger.init()
+        try {
+            with(init) {
+                wcKoinApp.modules(
+                    commonModule(),
+                    cryptoModule(),
+                    jsonRpcModule(),
+                    storageModule(),
+                    engineModule(iss)
+                )
+            }
 
-        with(init) {
-            wcKoinApp.modules(
-                commonModule(),
-                cryptoModule(),
-                jsonRpcModule(),
-                storageModule(),
-                engineModule(iss)
-            )
+            authEngine = wcKoinApp.koin.get()
+            authEngine.setup()
+        } catch (e: Exception) {
+            onError(Auth.Model.Error(e))
         }
-
-        authEngine = wcKoinApp.koin.get()
-        authEngine.handleInitializationErrors { error -> onError(Auth.Model.Error(error)) }
     }
 
     @Throws(IllegalStateException::class)

@@ -11,7 +11,9 @@ Kotlin implementation of WalletConnect Core SDK for Android applications.
 
 ## Documentation and usage
 
-* [Installation guide](https://docs.walletconnect.com/2.0/kotlin/guides/relay) 
+* [Installation guide](https://docs.walletconnect.com/2.0/kotlin/core/installation)
+* [Pairing Client](https://docs.walletconnect.com/2.0/kotlin/core/pairing)
+* [Relay Client](https://docs.walletconnect.com/2.0/kotlin/core/relay)
 
 &nbsp;
 
@@ -23,6 +25,7 @@ root/build.gradle.kts:
 allprojects {
  repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
  }
 }
 ```

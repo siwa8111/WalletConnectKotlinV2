@@ -20,6 +20,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -36,8 +37,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":chat:sdk"))
-    implementation(project(":androidCore:sdk"))
+    debugImplementation(project(":androidCore:sdk"))
+    debugImplementation(project(":chat:sdk"))
+
+    releaseImplementation(platform("com.walletconnect:android-bom:$BOM_VERSION"))
+    releaseImplementation("com.walletconnect:android-core")
+    releaseImplementation("com.walletconnect:chat")
 
     lifecycle()
     implementation("com.google.android.material:material:1.6.1")
