@@ -1,0 +1,5 @@
+-dontwarn okio.**
+-dontwarn okhttp3.**
+-dontwarn com.squareup.okhttp3.**
+-keep,includedescriptorclasses class com.squareup.okhttp3.** { *; }
+-keep,includedescriptorclasses interface com.squareup.okhttp3.** { *; }

@@ -2,6 +2,7 @@ package com.walletconnect.android.internal.common.di
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.lifecycle.LifecycleRegistry
@@ -16,7 +17,7 @@ import com.walletconnect.android.relay.ConnectionType
 import com.walletconnect.foundation.network.data.ConnectionController
 import com.walletconnect.foundation.network.data.adapter.FlowStreamAdapter
 import com.walletconnect.foundation.network.data.service.RelayService
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
@@ -49,20 +50,23 @@ fun coreAndroidNetworkModule(serverUrl: String, connectionType: ConnectionType, 
         }
     }
 
+    single(named(AndroidCommonDITags.RELAY_AUTHENTICATOR)) {
+        Authenticator { _, response ->
+            response.request.run {
+                if (Uri.parse(serverUrl).host == this.url.host) {
+                    val relayUrl = get<Uri>(named(AndroidCommonDITags.RELAY_URL)).toString().also { Log.e("Talha2", it) }
+                    this.newBuilder().url(relayUrl).build().also { Log.e("Talha3", it.toString()) }
+                } else {
+                    null
+                }
+            }
+        }
+    }
+
     single(named(AndroidCommonDITags.OK_HTTP)) {
         OkHttpClient.Builder()
             .addInterceptor(get<Interceptor>(named(AndroidCommonDITags.INTERCEPTOR)))
-            .authenticator(authenticator = { _, response ->
-                response.request.run {
-                    if (Uri.parse(serverUrl).host == this.url.host) {
-                        val relayUrl = get<Uri>(named(AndroidCommonDITags.RELAY_URL)).toString()
-                        relayUrl.toHttpUrlOrNull()
-                        this.newBuilder().url(relayUrl).build()
-                    } else {
-                        null
-                    }
-                }
-            })
+            .authenticator(get(named(AndroidCommonDITags.RELAY_AUTHENTICATOR)))
             .writeTimeout(TIMEOUT_TIME, TimeUnit.MILLISECONDS)
             .readTimeout(TIMEOUT_TIME, TimeUnit.MILLISECONDS)
             .callTimeout(TIMEOUT_TIME, TimeUnit.MILLISECONDS)
@@ -95,7 +99,7 @@ fun coreAndroidNetworkModule(serverUrl: String, connectionType: ConnectionType, 
     single(named(AndroidCommonDITags.SCARLET)) {
         Scarlet.Builder()
             .backoffStrategy(get<LinearBackoffStrategy>())
-            .webSocketFactory(get<OkHttpClient>(named(AndroidCommonDITags.OK_HTTP)).newWebSocketFactory(get<Uri>(named(AndroidCommonDITags.RELAY_URL)).toString()))
+            .webSocketFactory(get<OkHttpClient>(named(AndroidCommonDITags.OK_HTTP)).also { Log.e("Talha4", it.authenticator::class.isInstance(get<Authenticator>(named(AndroidCommonDITags.RELAY_AUTHENTICATOR))).toString()) }.newWebSocketFactory(get<Uri>(named(AndroidCommonDITags.RELAY_URL)).toString().also { Log.e("Talha", it) }))
             .lifecycle(get(named(AndroidCommonDITags.LIFECYCLE)))
             .addMessageAdapterFactory(get<MoshiMessageAdapter.Factory>(named(AndroidCommonDITags.MSG_ADAPTER)))
             .addStreamAdapterFactory(get<FlowStreamAdapter.Factory>())

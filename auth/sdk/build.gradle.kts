@@ -31,6 +31,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "${rootDir.path}/gradle/proguard-rules/sdk-rules.pro")
         }
     }
+
     compileOptions {
         sourceCompatibility = jvmVersion
         targetCompatibility = jvmVersion
@@ -51,7 +52,8 @@ sqldelight {
 
 dependencies {
     debugImplementation(project(":androidCore:sdk"))
-    releaseImplementation("com.walletconnect:android-core:$CORE_VERSION")
+    releaseImplementation(project(":androidCore:sdk"))
+//    releaseImplementation("com.walletconnect:android-core:$CORE_VERSION")
 
     okhttp()
     moshiKsp()

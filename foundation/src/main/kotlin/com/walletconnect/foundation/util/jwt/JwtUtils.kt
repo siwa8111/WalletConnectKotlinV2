@@ -10,6 +10,7 @@ import com.walletconnect.foundation.common.model.PublicKey
 import com.walletconnect.util.bytesToHex
 import io.ipfs.multibase.Base58
 import io.ipfs.multibase.Multibase
+import io.ipfs.multibase.binary.Base64
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
@@ -35,14 +36,12 @@ fun <T> encodeJSON(jsonObj: T): String {
     return encodeBase64(jsonByteArray)
 }
 
-@Suppress("NewApi")
 fun encodeBase64(bytes: ByteArray): String {
-    return String(io.ipfs.multibase.binary.Base64.encodeBase64URLSafe(bytes))
+    return String(Base64.encodeBase64URLSafe(bytes))
 }
 
-@Suppress("NewApi")
 fun decodeBase64(value: ByteArray): String {
-    return String(String(io.ipfs.multibase.binary.Base64.decodeBase64(value), Charsets.ISO_8859_1).toByteArray())
+    return String(String(Base64.decodeBase64(value), Charsets.ISO_8859_1).toByteArray())
 }
 
 fun encodeEd25519DidKey(publicKey: ByteArray): String {

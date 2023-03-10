@@ -3,6 +3,7 @@ package com.walletconnect.android.internal.common.di
 enum class AndroidCommonDITags {
     MOSHI,
     INTERCEPTOR,
+    RELAY_AUTHENTICATOR,
     OK_HTTP,
     RELAY_SERVICE,
     SCARLET,

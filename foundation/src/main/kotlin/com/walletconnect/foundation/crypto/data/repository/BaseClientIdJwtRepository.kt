@@ -30,15 +30,15 @@ abstract class BaseClientIdJwtRepository : JwtRepository {
         val clientId = issuer.split(":").last()
         getIssuerClientId(clientId)
         // ClientId Did Jwt have issuedAt as seconds
-        val (issuedAt, expiration) = jwtIatAndExp(timeunit = TimeUnit.SECONDS, expirySourceDuration = 1, expiryTimeUnit = TimeUnit.DAYS)
-        val payload = IrnJwtClaims(issuer, subject, serverUrl, issuedAt, expiration)
+        val (issuedAt, expiration) = jwtIatAndExp(timeunit = TimeUnit.SECONDS, expirySourceDuration = 1, expiryTimeUnit = TimeUnit.MINUTES)
+        val payload = IrnJwtClaims(issuer, subject, serverUrl, issuedAt, expiration).also { println("Talha5\t$it") }
         val data = encodeData(JwtHeader.EdDSA.encoded, payload).toByteArray()
         val signature = signJwt(PrivateKey(privateKey), data).getOrThrow()
 
         return encodeJWT(JwtHeader.EdDSA.encoded, payload, signature)
     }
 
-    fun generateAndStoreClientIdKeyPair(): Pair<String, String> {
+    protected fun generateAndStoreClientIdKeyPair(): Pair<String, String> {
         val secureRandom = SecureRandom(ByteArray(KEY_SIZE))
         val keyPair: AsymmetricCipherKeyPair = Ed25519KeyPairGenerator().run {
             this.init(Ed25519KeyGenerationParameters(secureRandom))
