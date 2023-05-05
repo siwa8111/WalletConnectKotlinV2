@@ -41,3 +41,5 @@ pluginManagement {
         mavenCentral()
     }
 }
+include(":lab:kotlinxml")
+include(":lab:java")
