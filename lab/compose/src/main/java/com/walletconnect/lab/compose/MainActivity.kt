@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val modalSheetState = rememberModalBottomSheetState(
                         initialValue = ModalBottomSheetValue.Hidden,
-                        skipHalfExpanded = false
+                        skipHalfExpanded = true
                     )
                     val bottomSheetNavigator = BottomSheetNavigator(modalSheetState)
                     val navController = rememberNavController(bottomSheetNavigator)

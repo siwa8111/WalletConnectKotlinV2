@@ -10,7 +10,7 @@ android {
     compileSdk = COMPILE_SDK
 
     defaultConfig {
-        applicationId = "com.walletconnect.lab.compose"
+        applicationId = "com.walletconnect.lab.kotlinxml"
         minSdk = MIN_SDK
         targetSdk = TARGET_SDK
         versionCode = 1
