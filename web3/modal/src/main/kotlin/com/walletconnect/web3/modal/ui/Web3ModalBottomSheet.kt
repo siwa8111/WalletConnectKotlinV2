@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialNavigationApi::class)
+@file:OptIn(ExperimentalAnimationApi::class)
 
 package com.walletconnect.web3.modal.ui
 
@@ -6,15 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.activity.ComponentDialog
+import androidx.activity.OnBackPressedCallback
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.navigation.NavHostController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.walletconnect.web3.modal.ui.components.internal.Web3ModalComponent
 
-class Web3ModalBottomSheet: BottomSheetDialogFragment() {
+class Web3ModalBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,18 +25,33 @@ class Web3ModalBottomSheet: BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 Web3ModalComposeView()
             }
         }
     }
-}
 
-@Composable
-private fun Web3ModalComposeView() {
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = false
-    )
-    Web3Modal(sheetState = modalSheetState)
+    @Composable
+    private fun Web3ModalComposeView() {
+        val navController = rememberAnimatedNavController()
+        (dialog as? ComponentDialog)?.onBackPressedDispatcher?.addCallback(
+            this@Web3ModalBottomSheet,
+            onBackPressedCallback(navController)
+        )
+        Web3ModalComponent(
+            navController = navController,
+            closeModal = { this@Web3ModalBottomSheet.dismiss() }
+        )
+    }
+
+
+    private fun onBackPressedCallback(navController: NavHostController) =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (navController.popBackStack().not()) {
+                    dismiss()
+                }
+            }
+        }
 }
