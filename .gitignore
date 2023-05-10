@@ -88,3 +88,6 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Android Lab module
+lab/*
