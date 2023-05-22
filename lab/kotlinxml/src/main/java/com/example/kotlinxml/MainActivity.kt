@@ -9,7 +9,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.navigation.createGraph
+import androidx.navigation.fragment.fragment
 import com.example.kotlinxml.databinding.ActivityMainBinding
+import com.walletconnect.web3.modal.ui.web3Modal
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +28,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+        navController.graph = navController.createGraph(
+            "FirstFragment"
+        ) {
+            fragment<FirstFragment>("FirstFragment")
+            web3Modal()
+        }
+
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
