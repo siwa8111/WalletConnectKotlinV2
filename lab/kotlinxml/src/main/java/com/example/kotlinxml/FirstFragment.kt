@@ -34,8 +34,7 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val config = Config.Connect(
-            uri = "wc:7f6e504bfad60b485450578e05678ed3e8e8c4751d3c6160be17160d63ec90f9@2",
-            chains = listOf("eip155")
+            uri = "wc:7f6e504bfad60b485450578e05678ed3e8e8c4751d3c6160be17160d63ec90f9@2"
         )
 
         binding.buttonFirst.setOnClickListener { findNavController().navigateToWeb3Modal(config) }
